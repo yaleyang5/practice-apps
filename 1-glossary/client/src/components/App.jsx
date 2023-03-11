@@ -41,6 +41,7 @@ const App = (props) => {
       definition: definitionInput
     })
       .then((res) => {
+        // get here
         console.log(res);
       })
       .catch((err) => {
@@ -51,8 +52,10 @@ const App = (props) => {
     setDefinitionInput('');
   }
 
+  // useEffect
   axios.get('/glossary')
     .then((res) => {
+      // set GlossaryList state (to create)
       console.log('here is get res: ', res);
     })
     .catch((err) => {
