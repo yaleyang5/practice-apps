@@ -1,8 +1,8 @@
 import React from "react";
 
 const GlossaryListItem = (props) => {
-  const [term, setTerm] = React.useState(props.term);
-  const [definition, setDefinition] = React.useState(props.definition);
+  const [term, setTerm] = React.useState(props.glossaryItem.term);
+  const [definition, setDefinition] = React.useState(props.glossaryItem.definition);
 
   const handleEdit = (event) => {
     console.log(term, definition);
@@ -13,16 +13,13 @@ const GlossaryListItem = (props) => {
   }
 
   const handleDelete = (event) => {
-    console.log(term, definition);
-    // update initial glossary
+    props.handleDeleteTerm(props.glossaryItem);
   }
-
-
 
   return (
     <div>
-      <div><strong>{props.term}</strong></div>
-      <div>{props.definition}</div>
+      <div><strong>{term}</strong></div>
+      <div>{definition}</div>
       <button onClick={handleEdit}>Edit</button>
       <button onClick={handleDelete}>Delete</button>
       <br />

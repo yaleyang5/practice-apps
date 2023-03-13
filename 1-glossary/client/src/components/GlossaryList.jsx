@@ -2,9 +2,11 @@ import React from "react";
 import GlossaryListItem from './GlossaryListItem.jsx';
 
 const GlossaryList = (props) => {
+  // console.log(props.glossaryList);
+
   return (
-    <div> {props.glossaryItems.map((glossaryItem, index) =>
-      <GlossaryListItem key={index} term={glossaryItem.term} definition={glossaryItem.definition}/>
+    <div> {props.glossaryList.map((glossaryItem) =>
+      <GlossaryListItem key={glossaryItem._id} glossaryItem={glossaryItem} handleDeleteTerm={props.handleDeleteTerm} />
     )}
     </div>
   );

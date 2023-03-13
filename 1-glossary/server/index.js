@@ -10,7 +10,7 @@ const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "../client/dist")));
 
-app.post('/', (req, res) => {
+app.post('/glossary', (req, res) => {
   // send req.body to db
   const glossaryEntry = new Entry(req.body);
   glossaryEntry.save((err, entry) => {
@@ -27,9 +27,20 @@ app.get('/glossary', (req, res) => {
     if (err) {
       return err;
     }
-    console.log('docs: ', docs);
+    // console.log('docs: ', docs);
     res.send(docs);
   });
+});
+
+app.delete('/glossary', (req, res) => {
+  // console.log('req.body:', req.body);
+  Entry.findByIdAndDelete(req.body._id, (err) => {
+    if (err) {
+      console.log(err);
+    }
+  });
+  console.log(req.body.term + ' deleted from db!');
+  res.sendStatus(204);
 });
 
 

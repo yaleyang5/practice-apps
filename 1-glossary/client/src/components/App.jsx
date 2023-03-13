@@ -1,9 +1,9 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import GlossaryList from './GlossaryList.jsx';
 import axios from 'axios';
 
 const App = (props) => {
-  var initialGlossary = [
+  const [glossaryList, setGlossaryList] = useState([ /*
     {'term': 'cachet',
       'definition': 'an indication of approved or superior status'},
     {'term': 'dilatory',
@@ -23,11 +23,11 @@ const App = (props) => {
     {'term': 'unabashed',
       'definition': 'not embarrassed'},
     {'term': 'uncanny',
-      'definition': 'surpassing the ordinary or normal'},
-  ];
+      'definition': 'surpassing the ordinary or normal'}, */
+  ]);
 
-  const [termInput, setTermInput] = React.useState('');
-  const [definitionInput, setDefinitionInput] = React.useState('');
+  const [termInput, setTermInput] = useState('');
+  const [definitionInput, setDefinitionInput] = useState('');
 
   const handleAddTerm = (event) => {
     if (termInput === '' || definitionInput === '') {
@@ -36,31 +36,62 @@ const App = (props) => {
     }
     event.preventDefault();
     // on submit use axios to make post request
-    axios.post('/', {
+    axios.post('/glossary', {
       term: termInput,
       definition: definitionInput
     })
-      .then((res) => {
-        // get here
-        console.log(res);
+      .catch((err) => {
+        console.log(err);
       })
+      .then(() => (
+        axios.get('/glossary')
+        .then((res) => {
+          setGlossaryList(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+      ))
       .catch((err) => {
         console.log(err);
       });
+
 
     setTermInput('');
     setDefinitionInput('');
   }
 
-  // useEffect
-  axios.get('/glossary')
+  const handleDeleteTerm = (glossaryItem) => {
+    axios.delete('/glossary', {data: glossaryItem})
+      .catch((err) => {
+        console.log(err);
+      })
+      .then(() => (
+        axios.get('/glossary')
+        .then((res) => {
+          // console.log(res.data);
+          setGlossaryList(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+      ))
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  useEffect(() => {
+    console.log('use effect called');
+    axios.get('/glossary')
     .then((res) => {
-      // set GlossaryList state (to create)
-      console.log('here is get res: ', res);
+      setGlossaryList(res.data);
     })
     .catch((err) => {
       console.log(err);
-    });
+    })
+  }, []);
+
 
   return (
     <>
@@ -71,7 +102,8 @@ const App = (props) => {
         <input placeholder="Add its definition" value={definitionInput} onChange={(event) => {setDefinitionInput(event.target.value)}} />
         <button onClick={handleAddTerm}>Add Glossary Entry</button>
       </div>
-      <div><GlossaryList glossaryItems={initialGlossary}/></div>
+      <div><GlossaryList glossaryList={glossaryList} handleDeleteTerm={handleDeleteTerm} />
+      </div>
     </>
   );
 }
